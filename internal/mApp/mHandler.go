@@ -1,65 +1,36 @@
 package mApp
 
 import (
-	"html/template"
-	"io"
 	"net/http"
-	"os"
+	"strings"
 
+	"github.com/8ea7b571/MoliBlog/internal/model"
+	"github.com/8ea7b571/MoliBlog/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func (ma *MApp) IndexHandler(ctx *gin.Context) {
+	// generate recent posts
+	var recentPosts []*model.MPost
+	for i := 0; i < utils.Min(len(ma.Posts), ma.Config.MSite.RecentPostNum); i++ {
+		tmpPost := ma.Posts[i]
+		tmpPost.Date = strings.Split(tmpPost.Date, " ")[0]
+
+		recentPosts = append(recentPosts, tmpPost)
+	}
+
 	resData := gin.H{
 		"site_info": gin.H{
-			"title": "MoliBlog",
+			"title":  ma.Config.MSite.Title,
+			"author": ma.Config.MSite.Author,
 		},
-		"articles": ma.articles,
+		"recent_posts": recentPosts,
 	}
 
 	ctx.HTML(http.StatusOK, "index.html", resData)
 }
 
-func (ma *MApp) ArticleHandler(ctx *gin.Context) {
-	hash := ctx.Param("hash")
-
-	for _, article := range ma.articles {
-		if article.HtmlHash == hash {
-			file, err := os.Open(article.HtmlPath)
-			if err != nil {
-				_ = ctx.Error(err)
-				return
-			}
-			defer file.Close()
-
-			data, err := io.ReadAll(file)
-			if err != nil {
-				_ = ctx.Error(err)
-				return
-			}
-
-			resData := gin.H{
-				"site_info": gin.H{
-					"title": "MoliBlog",
-				},
-				"article": gin.H{
-					"title":      article.Title,
-					"date":       article.Date,
-					"tags":       article.Tags,
-					"categories": article.Categories,
-					"content":    template.HTML(data),
-				},
-			}
-
-			ctx.HTML(http.StatusOK, "article.html", resData)
-			return
-		}
-	}
-
-	ctx.JSON(http.StatusNotFound, gin.H{"msg": "not found"})
-}
-
-func (ma *MApp) UpdateArticleHandler(ctx *gin.Context) {
+func (ma *MApp) UpdateBlogHandler(ctx *gin.Context) {
 	var err error
 
 	err = ma.loadMarkdownFiles()

@@ -1,0 +1,7 @@
+host: 0.0.0.0
+port: 8080
+
+m_site:
+  title: MoliBlog
+  author: yvling
+  recent_post_num: 10

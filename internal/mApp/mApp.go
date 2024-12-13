@@ -18,11 +18,11 @@ type MApp struct {
 	lute   *lute.Lute
 	engine *gin.Engine
 
-	tags       map[string][]*model.MArticle // A collection of articles with a certain tag
-	categories map[string][]*model.MArticle // A collection of articles in a certain category
+	tags       map[string][]*model.MPost // A collection of Posts with a certain tag
+	categories map[string][]*model.MPost // A collection of Posts in a certain category
 
-	articles      []*model.MArticle
-	markdownFiles []model.MFileInfo
+	Posts    []*model.MPost
+	SrcFiles []model.MFileInfo
 }
 
 const (
@@ -50,7 +50,7 @@ func NewMApp(cfg *config.MConfig) *MApp {
 		lute:   lute.New(),
 		engine: gin.Default(),
 
-		tags:       make(map[string][]*model.MArticle),
-		categories: make(map[string][]*model.MArticle),
+		tags:       make(map[string][]*model.MPost),
+		categories: make(map[string][]*model.MPost),
 	}
 }

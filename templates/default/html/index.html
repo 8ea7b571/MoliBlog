@@ -3,18 +3,62 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .site_info.title }}</title>
+    <link rel="icon" type="image/x-icon" href="../assets/img/logo.png" />
+    <link rel="stylesheet" href="../assets/css/lib/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <script src="../assets/js/lib/jquery.min.js"></script>
+    <script src="../assets/js/lib/bootstrap.min.js"></script>
 </head>
 <body>
-<div>
-    <ul>
-        {{ range $i,$v := .articles }}
-        <li>{{ $v.HtmlHash }} | {{ $v.Title }}</li>
-        {{ end }}
-    </ul>
-</div>
+<div class="root-container">
+    <!-- header -->
+    <div class="container">
+        <div class="row pt-3 pt-sm-4 pt-md-5">
+            <div class="col main-logo">
+                <div class="main-logo-img">
 
+                </div>
+                <div class="main-logo-txt">
+                    {{ .site_info.title }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row pt-4 pt-lg-5">
+            <div class="col">
+                <a class="navigation-link" href="/"> - 首页 </a>
+                <a class="navigation-link" href="/"> - 归档 </a>
+                <a class="navigation-link" href="/"> -  友链 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- body -->
+    <div class="container">
+        <div class="row pt-4 pt-lg-5">
+            <h4 class="recent-post-title"># 最近更新</h4>
+            <div class="col-12 col-md-8">
+                <div>
+                    {{ range $i, $v := .recent_posts }}
+                    <div class="recent-post-item">
+                        <span class="d-none d-md-inline recent-post-item-date">{{ $v.Date }}&nbsp; | &nbsp;</span>
+                        <a class="recent-post-item-link" href="/post/{{ $v.HtmlHash }}">{{ $v.Title }}</a>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- footer -->
+
+</div>
 </body>
 </html>
 

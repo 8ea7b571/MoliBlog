@@ -15,7 +15,7 @@ import (
 func (ma *MApp) loadMarkdownFiles() error {
 	var markdownList []model.MFileInfo
 
-	markdownPath := fmt.Sprintf("%s/%s", ma.Config.Root, SRC)
+	markdownPath := SRC
 	err := filepath.Walk(markdownPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -40,15 +40,15 @@ func (ma *MApp) loadMarkdownFiles() error {
 		return err
 	}
 
-	ma.markdownFiles = markdownList
+	ma.SrcFiles = markdownList
 	return nil
 }
 
 // parseMarkdowns parse markdown files to html
 func (ma *MApp) parseMarkdowns() error {
-	htmlPath := fmt.Sprintf("%s/%s", ma.Config.Root, DST)
+	htmlPath := DST
 
-	for _, file := range ma.markdownFiles {
+	for _, file := range ma.SrcFiles {
 		// read markdown file
 		_mdFile, err := os.Open(file.Path)
 		if err != nil {
@@ -61,12 +61,12 @@ func (ma *MApp) parseMarkdowns() error {
 			return err
 		}
 
-		// extract frontmatter and clean markdown bytes
-		_frontmatter, _cleanbytes := utils.ExtractFrontMatter(_mdByte)
+		// extract FrontMatter and clean markdown bytes
+		_frontMatter, _cleanBytes := utils.ExtractFrontMatter(_mdByte)
 
-		// parse frontmatter to article metadata
-		var article model.MArticle
-		err = yaml.Unmarshal(_frontmatter, &article)
+		// parse frontmatter to post metadata
+		var post model.MPost
+		err = yaml.Unmarshal(_frontMatter, &post)
 		if err != nil {
 			return err
 		}
@@ -79,29 +79,29 @@ func (ma *MApp) parseMarkdowns() error {
 		}
 		defer _htmlFile.Close()
 
-		_htmlbyte := ma.lute.Markdown(file.Name, _cleanbytes)
-		_, err = _htmlFile.Write(_htmlbyte)
+		_htmlByte := ma.lute.Markdown(file.Name, _cleanBytes)
+		_, err = _htmlFile.Write(_htmlByte)
 		if err != nil {
 			return err
 		}
 
-		// save html path to article's metadata
-		article.HtmlHash = utils.Sha256Hash(_htmlbyte)
-		article.HtmlPath = _htmlPath
+		// save html path to post's metadata
+		post.HtmlHash = utils.Sha256Hash(_htmlByte)
+		post.HtmlPath = _htmlPath
 
-		ma.articles = append(ma.articles, &article)
+		ma.Posts = append(ma.Posts, &post)
 
 		// save tags and categories to map
-		for _, tag := range article.Tags {
-			ma.tags[tag] = append(ma.tags[tag], &article)
+		for _, tag := range post.Tags {
+			ma.tags[tag] = append(ma.tags[tag], &post)
 		}
 
-		for _, category := range article.Categories {
-			ma.categories[category] = append(ma.categories[category], &article)
+		for _, category := range post.Categories {
+			ma.categories[category] = append(ma.categories[category], &post)
 		}
 	}
 
-	// sort articles by date
-	model.SortArticlesByDate(ma.articles)
+	// sort Posts by date
+	model.SortPostsByDate(ma.Posts)
 	return nil
 }

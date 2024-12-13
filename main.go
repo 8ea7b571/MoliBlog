@@ -27,12 +27,6 @@ func init() {
 }
 
 func main() {
-	cfg := config.MConfig{
-		Host: "0.0.0.0",
-		Port: 8080,
-		Root: "D:/Projects/Go/MoliBlog",
-	}
-
-	mapp := mApp.NewMApp(&cfg)
+	mapp := mApp.NewMApp(config.MConfigInstance)
 	mapp.Run()
 }

@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// MArticle article metadata
-type MArticle struct {
+// MPost post metadata
+type MPost struct {
 	Title      string   `yaml:"title" json:"title"`
 	Cover      string   `yaml:"cover" json:"cover"`
 	Date       string   `yaml:"date" json:"date"`
@@ -17,17 +17,17 @@ type MArticle struct {
 	HtmlPath string `yaml:"htmlPath" json:"html_path"`
 }
 
-type MArticleSlice []*MArticle
+type MPostSlice []*MPost
 
-func (a MArticleSlice) Len() int {
+func (a MPostSlice) Len() int {
 	return len(a)
 }
 
-func (a MArticleSlice) Swap(i, j int) {
+func (a MPostSlice) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-func (a MArticleSlice) Less(i, j int) bool {
+func (a MPostSlice) Less(i, j int) bool {
 	timeFormat := "2006-01-02 15:04:05"
 	t1, err1 := time.Parse(timeFormat, a[i].Date)
 	t2, err2 := time.Parse(timeFormat, a[j].Date)
@@ -39,7 +39,7 @@ func (a MArticleSlice) Less(i, j int) bool {
 	return t1.After(t2)
 }
 
-func SortArticlesByDate(articles []*MArticle) []*MArticle {
-	sort.Sort(MArticleSlice(articles))
-	return articles
+func SortPostsByDate(Posts []*MPost) []*MPost {
+	sort.Sort(MPostSlice(Posts))
+	return Posts
 }
