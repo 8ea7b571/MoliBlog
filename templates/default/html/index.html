@@ -1,0 +1,21 @@
+{{ define "index.html" }}
+
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .site_info.title }}</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+</head>
+<body>
+<div>
+    <ul>
+        {{ range $i,$v := .articles }}
+        <li>{{ $v.HtmlHash }} | {{ $v.Title }}</li>
+        {{ end }}
+    </ul>
+</div>
+
+</body>
+</html>
+
+{{ end }}
